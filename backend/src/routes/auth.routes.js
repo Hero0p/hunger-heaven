@@ -14,7 +14,7 @@ router.get("/user/logout" , authController.logoutUser);
 
 // food partner auth API 
 
-router.post("/food-partner/register" , authController.resgisterPartner);
+router.post("/food-partner/register" , authController.registerPartner);
 router.post("/food-partner/login" , authController.loginPartner);
 router.get("/food-partner/logout" , authController.logoutPartner);
 

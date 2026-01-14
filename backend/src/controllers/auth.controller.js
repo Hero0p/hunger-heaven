@@ -1,9 +1,9 @@
 const userModel = require("../models/user.model");
-const foodPartner = require("../models/foodpartner.model")
+const foodPartnerModel = require("../models/foodpartner.model")
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const { default: mongoose } = require("mongoose");
-const foodPartnerModel = require("../models/foodpartner.model");
+// const foodPartnerModel = require("../models/foodpartner.model");
 
 
 const cookieOptions = {
@@ -48,15 +48,15 @@ async function registerUser(req , res) {
 async function loginUser(req , res){
     const {email , password} = req.body;
 
-    user = await userModel.findOne({email});
+    const user = await userModel.findOne({email});
 
     if(!user) return res.status(400).json({message :"user not found"});
 
     const isPassValid = await bcrypt.compare(password , user.password);
-    if(!isPassValid) return res.status(400).json({messsage : "invalid username or password"});
+    if(!isPassValid) return res.status(400).json({message : "invalid username or password"});
     
     const token = jwt.sign({
-        id : user.id
+        id : user._id
     },process.env.JWT_SECRET);
 
     res.cookie("token" , token , cookieOptions);
@@ -76,11 +76,11 @@ function logoutUser(req , res){
 
 }
 
-async function resgisterPartner(req , res){
+async function registerPartner(req , res){
     const {name , email , password} = req.body 
     const partnerExist = await foodPartnerModel.findOne({email})
     if(partnerExist) return res.status(400).json({message : "accouont already exists"});
-    const hashedPassword = await bycrypt.hash(password , 10);
+    const hashedPassword = await bcrypt.hash(password , 10);
     const foodPartner = await foodPartnerModel.create({
         name,
         email,
@@ -96,7 +96,7 @@ async function resgisterPartner(req , res){
     return res.status(201).json({
         message : "registeration successfull",
         foodPartner : {
-            id : _id,
+            id : foodPartner._id,
             name : foodPartner.name,
             email : foodPartner.email
         }
@@ -104,16 +104,16 @@ async function resgisterPartner(req , res){
 }
 
 async function loginPartner(req , res){
-    const {email , pass} = req.body;
+    const {email , password} = req.body;
 
-    const foodPartner = await foodPartner.findOne({email});
+    const foodPartner = await foodPartnerModel.findOne({email});
     if(!foodPartner) return res.status(400).json({message:"invalid email"});
-    const isPassValid = bcrypt.compare(pass , foodPartner.password);
+    const isPassValid = await bcrypt.compare(password , foodPartner.password);
     if(!isPassValid){
-        return res.status(201).json({message : "invalid email or password"});
+        return res.status(401).json({message : "invalid email or password"});
     }
 
-    const token = JWT.sign({
+    const token = jwt.sign({
         id : foodPartner._id
     }, process.env.JWT_SECRET);
 
@@ -137,4 +137,4 @@ function logoutPartner(req , res){
 
 
 
-module.exports = {registerUser , loginUser , logoutUser , resgisterPartner , loginPartner , logoutPartner};
+module.exports = {registerUser , loginUser , logoutUser , registerPartner , loginPartner , logoutPartner};
