@@ -19,4 +19,9 @@ async function createFood(req , res){
 
 }
 
-module.exports = {createFood};
+async function getFoodItems(req , res){
+    const foodItems = await foodModel.find({});
+    return res.status(200).json({message : "food items listed successfull" , foodItems})
+}
+
+module.exports = {createFood , getFoodItems};
