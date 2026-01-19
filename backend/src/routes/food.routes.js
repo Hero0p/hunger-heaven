@@ -13,4 +13,20 @@ router.post('/' , authMiddleware.authFoodPartnerMiddleware , upload.single("vide
 // get for users
 router.get('/' , authMiddleware.authUserMiddleware , foodController.getFoodItems);
 
+
+router.post('/like',
+    authMiddleware.authUserMiddleware,
+    foodController.likeFood)
+
+router.post('/save',
+    authMiddleware.authUserMiddleware,
+    foodController.saveFood
+)
+
+
+router.get('/save',
+    authMiddleware.authUserMiddleware,
+    foodController.getSaveFood
+)
+
 module.exports = router
