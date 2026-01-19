@@ -14,6 +14,7 @@ async function getFoodPartnerById(req, res) {
         return res.status(404).json({ message: "Food partner not found" });
     }
     // console.log(foodItemsByFoodPartner);
+    const total = foodItemsByFoodPartner.length;
     const totalMeals = foodItemsByFoodPartner.length;
 
     res.status(200).json({
