@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/auth-shared.css';
-import axios from 'axios';
+import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
 
@@ -20,14 +20,11 @@ const UserRegister = () => {
 
 
         try {
-            const response = await axios.post("http://localhost:3000/api/auth/user/register", {
+            const response = await api.post("/auth/user/register", {
                 fullName: firstName + " " + lastName,
                 email,
                 password
-            },
-                {
-                    withCredentials: true
-                })
+            })
 
             showMessage('Registration successful! Please login.', 'success');
             navigate("/")

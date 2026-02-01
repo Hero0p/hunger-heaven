@@ -1,7 +1,7 @@
 import React, { useState, useEffect, use } from 'react'
 import '../../styles/profile.css'
 import { useParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../services/api'
 import MenuGrid from '../../components/menu/MenuGrid'
 
 const Profile = () => {
@@ -12,7 +12,7 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('reels')
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/food-partner/${id}`, { withCredentials: true })
+        api.get(`/food-partner/${id}`)
             .then(response => {
                 setProfile(response.data.foodPartner)
                 setVideos(response.data.foodPartner.reels || [])

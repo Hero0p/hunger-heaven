@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const UserContext = createContext(null);
 
@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
 
     const checkUser = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/auth/user/me', { withCredentials: true });
+            const response = await api.get('/auth/user/me');
             setUser(response.data.user);
         } catch (error) {
             console.error("User context checkUser failed:", error.response?.data || error.message);
@@ -29,7 +29,7 @@ export const UserProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.get('http://localhost:3000/api/auth/user/logout', { withCredentials: true });
+            await api.get('/auth/user/logout');
             setUser(null);
             // Optional: redirect or reload
             window.location.href = '/';

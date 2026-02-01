@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/auth-shared.css';
-import axios from 'axios';
+import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
 
@@ -32,9 +32,8 @@ const FoodPartnerRegister = () => {
       formData.append('image', imageFile);
     }
 
-    axios.post("http://localhost:3000/api/auth/food-partner/register", formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-      withCredentials: true
+    api.post("/auth/food-partner/register", formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
     })
       .then(response => {
         showMessage('Partner registration successful!', 'success');

@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../styles/auth-shared.css';
-import axios from 'axios';
+import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
 import { useUser } from '../../context/UserContext';
@@ -18,10 +18,10 @@ const UserLogin = () => {
     const password = e.target.password.value;
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/user/login", {
+      const response = await api.post("/auth/user/login", {
         email,
         password
-      }, { withCredentials: true });
+      });
 
       showMessage('Login successful!', 'success');
       login(response.data.user);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { Link } from 'react-router-dom';
 import classes from '../../styles/Search.module.css';
 
@@ -30,7 +30,7 @@ const Search = () => {
         }
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:3000/api/search?q=${encodeURIComponent(q)}`, { withCredentials: true });
+            const response = await api.get(`/search?q=${encodeURIComponent(q)}`);
             setResults(response.data);
         } catch (error) {
             console.error("Search failed", error);
