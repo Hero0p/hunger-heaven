@@ -4,7 +4,7 @@ import axios from 'axios'
 import ReelFeed from '../../components/ReelFeed'
 
 const Saved = () => {
-    const [ videos, setVideos ] = useState([])
+    const [videos, setVideos] = useState([])
 
     useEffect(() => {
         axios.get("http://localhost:3000/api/food/save", { withCredentials: true })
@@ -17,6 +17,7 @@ const Saved = () => {
                     savesCount: item.food.savesCount,
                     commentsCount: item.food.commentsCount,
                     foodPartner: item.food.foodPartner,
+                    isSaved: true,
                 }))
                 setVideos(savedFoods)
             })
@@ -25,7 +26,7 @@ const Saved = () => {
     const removeSaved = async (item) => {
         try {
             await axios.post("http://localhost:3000/api/food/save", { foodId: item._id }, { withCredentials: true })
-            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: Math.max(0, (v.savesCount ?? 1) - 1) } : v))
+            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: Math.max(0, (v.savesCount ?? 1) - 1), isSaved: false } : v))
         } catch {
             // noop
         }

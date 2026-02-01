@@ -11,11 +11,7 @@
   background-attachment: fixed;
 }
 
-@media (prefers-color-scheme: dark) {
-  .auth-page-wrapper {
-    background: radial-gradient(circle at 70% 60%, var(--color-surface-alt) 0%, var(--color-bg) 65%);
-  }
-}
+
 
 .auth-card {
   width: 100%;
@@ -30,7 +26,9 @@
   gap: var(--space-5);
 }
 
-.auth-card header { text-align: center; }
+.auth-card header {
+  text-align: center;
+}
 
 .auth-title {
   font-size: 1.45rem;
@@ -44,9 +42,17 @@
   color: var(--color-text-secondary);
 }
 
-form.auth-form { display: flex; flex-direction: column; gap: var(--space-4); }
+form.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
 
-.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
 .field-group label {
   font-size: .75rem;
@@ -67,7 +73,8 @@ form.auth-form { display: flex; flex-direction: column; gap: var(--space-4); }
   color: var(--color-text);
   transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
   width: 100%;
-  min-width: 0; /* allow shrinking inside flex parent */
+  min-width: 0;
+  /* allow shrinking inside flex parent */
 }
 
 .field-group input:focus-visible {
@@ -76,8 +83,15 @@ form.auth-form { display: flex; flex-direction: column; gap: var(--space-4); }
   background: var(--color-surface);
 }
 
-.two-col { display: flex; gap: var(--space-4); }
-.two-col .field-group { flex: 1 1 0; min-width: 0; }
+.two-col {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.two-col .field-group {
+  flex: 1 1 0;
+  min-width: 0;
+}
 
 button.auth-submit {
   margin-top: var(--space-2);
@@ -97,9 +111,18 @@ button.auth-submit {
   transition: background var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
 }
 
-button.auth-submit:hover { background: var(--color-accent-hover); }
-button.auth-submit:active { transform: translateY(1px); }
-button.auth-submit:focus-visible { outline: 2px solid var(--color-accent-hover); outline-offset: 2px; }
+button.auth-submit:hover {
+  background: var(--color-accent-hover);
+}
+
+button.auth-submit:active {
+  transform: translateY(1px);
+}
+
+button.auth-submit:focus-visible {
+  outline: 2px solid var(--color-accent-hover);
+  outline-offset: 2px;
+}
 
 .auth-alt-action {
   text-align: center;
@@ -107,18 +130,35 @@ button.auth-submit:focus-visible { outline: 2px solid var(--color-accent-hover);
   color: var(--color-text-secondary);
 }
 
-.auth-alt-action a { font-weight: 600; }
+.auth-alt-action a {
+  font-weight: 600;
+}
 
-.small-note { font-size: .7rem; color: var(--color-text-secondary); line-height: 1.2; }
+.small-note {
+  font-size: .7rem;
+  color: var(--color-text-secondary);
+  line-height: 1.2;
+}
 
 /* Utility for spacing adjustments */
-.gap-sm { gap: var(--space-2); }
+.gap-sm {
+  gap: var(--space-2);
+}
 
 /* Responsive */
 @media (max-width: 480px) {
-  .auth-card { padding: var(--space-5) var(--space-5) var(--space-4); }
-  .two-col { flex-direction: column; }
+  .auth-card {
+    padding: var(--space-5) var(--space-5) var(--space-4);
+  }
+
+  .two-col {
+    flex-direction: column;
+  }
 }
 
 /* Smooth transitions for theme change */
-body, .auth-card, .field-group input { transition: background 200ms ease, color 200ms ease, border-color 200ms ease; }
+body,
+.auth-card,
+.field-group input {
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}

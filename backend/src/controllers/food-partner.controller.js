@@ -13,14 +13,23 @@ async function getFoodPartnerById(req, res) {
     if (!foodPartner) {
         return res.status(404).json({ message: "Food partner not found" });
     }
-    // console.log(foodItemsByFoodPartner);
+
+    // Separate Reels (have video) vs Menu Items (no video or empty)
+    // Note: Old data might have video required so 'reels' might overlap unless we strictly check content.
+    // Logic: If video is present and string length > 0, it's a Reel. Else Menu.
+
+    const reels = foodItemsByFoodPartner.filter(item => item.video && item.video.trim() !== "");
+    const menuItems = foodItemsByFoodPartner.filter(item => !item.video || item.video.trim() === "");
+
     const totalMeals = foodItemsByFoodPartner.length;
 
     res.status(200).json({
         message: "Food partner retrieved successfully",
         foodPartner: {
             ...foodPartner.toObject(),
-            foodItems: foodItemsByFoodPartner,
+            // foodItems: foodItemsByFoodPartner, // Replaced by separated lists
+            reels,
+            menuItems,
             totalMeals,
             customersServed,
         }

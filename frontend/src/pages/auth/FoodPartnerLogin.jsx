@@ -2,10 +2,12 @@ import React from 'react';
 import '../../styles/auth-shared.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useFlashMessage } from '../../context/FlashMessageContext';
 
 const FoodPartnerLogin = () => {
 
   const navigate = useNavigate();
+  const { showMessage } = useFlashMessage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,15 +15,18 @@ const FoodPartnerLogin = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const response = await axios.post("http://localhost:3000/api/auth/food-partner/login", {
-      email,
-      password
-    }, { withCredentials: true });
+    try {
+      const response = await axios.post("http://localhost:3000/api/auth/food-partner/login", {
+        email,
+        password
+      }, { withCredentials: true });
 
-    console.log(response.data);
-
-    navigate("/create-food"); // Redirect to create food page after login
-
+      showMessage('Partner login successful!', 'success');
+      navigate("/create-food"); // Redirect to create food page after login
+    } catch (error) {
+      console.error(error);
+      showMessage(error.response?.data?.message || 'Login failed. Check credentials.', 'error');
+    }
   };
 
   return (

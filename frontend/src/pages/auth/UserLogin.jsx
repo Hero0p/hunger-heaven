@@ -2,10 +2,14 @@ import React from 'react';
 import '../../styles/auth-shared.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useFlashMessage } from '../../context/FlashMessageContext';
+import { useUser } from '../../context/UserContext';
 
 const UserLogin = () => {
 
   const navigate = useNavigate();
+  const { showMessage } = useFlashMessage();
+  const { login } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,15 +17,19 @@ const UserLogin = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const response = await axios.post("http://localhost:3000/api/auth/user/login", {
-      email,
-      password
-    }, { withCredentials: true });
+    try {
+      const response = await axios.post("http://localhost:3000/api/auth/user/login", {
+        email,
+        password
+      }, { withCredentials: true });
 
-    console.log(response.data);
-
-    navigate("/"); // Redirect to home after login
-
+      showMessage('Login successful!', 'success');
+      login(response.data.user);
+      navigate("/"); // Redirect to home after login
+    } catch (error) {
+      console.error(error);
+      showMessage(error.response?.data?.message || 'Login failed. Please check your credentials.', 'error');
+    }
   };
 
   return (

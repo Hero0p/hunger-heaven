@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import '../../styles/auth-shared.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useFlashMessage } from '../../context/FlashMessageContext';
 
 const FoodPartnerRegister = () => {
 
   const navigate = useNavigate();
-  
-  const handleSubmit = (e) => { 
+  const { showMessage } = useFlashMessage();
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const businessName = e.target.businessName.value;
@@ -17,21 +19,30 @@ const FoodPartnerRegister = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const address = e.target.address.value;
+    const imageFile = e.target.image.files[0];
 
-    axios.post("http://localhost:3000/api/auth/food-partner/register", {
-      name:businessName,
-      contactName,
-      phone,
-      email,
-      password,
-      address
-    }, { withCredentials: true })
+    const formData = new FormData();
+    formData.append('name', businessName);
+    formData.append('contactName', contactName);
+    formData.append('phone', phone);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('address', address);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    axios.post("http://localhost:3000/api/auth/food-partner/register", formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      withCredentials: true
+    })
       .then(response => {
-        console.log(response.data);
+        showMessage('Partner registration successful!', 'success');
         navigate("/create-food"); // Redirect to create food page after successful registration
       })
       .catch(error => {
         console.error("There was an error registering!", error);
+        showMessage(error.response?.data?.message || 'Registration failed. Please try again.', 'error');
       });
   };
 
@@ -42,8 +53,8 @@ const FoodPartnerRegister = () => {
           <h1 id="partner-register-title" className="auth-title">Partner sign up</h1>
           <p className="auth-subtitle">Grow your business with our platform.</p>
         </header>
-        <nav className="auth-alt-action" style={{marginTop: '-4px'}}>
-          <strong style={{fontWeight:600}}>Switch:</strong> <Link to="/user/register">User</Link> • <Link to="/food-partner/register">Food partner</Link>
+        <nav className="auth-alt-action" style={{ marginTop: '-4px' }}>
+          <strong style={{ fontWeight: 600 }}>Switch:</strong> <Link to="/user/register">User</Link> • <Link to="/food-partner/register">Food partner</Link>
         </nav>
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="field-group">
@@ -60,10 +71,10 @@ const FoodPartnerRegister = () => {
               <input id="phone" name="phone" placeholder="+1 555 123 4567" autoComplete="tel" />
             </div>
           </div>
-            <div className="field-group">
-              <label htmlFor="email">Email</label>
-              <input id="email" name="email" type="email" placeholder="business@example.com" autoComplete="email" />
-            </div>
+          <div className="field-group">
+            <label htmlFor="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="business@example.com" autoComplete="email" />
+          </div>
           <div className="field-group">
             <label htmlFor="password">Password</label>
             <input id="password" name="password" type="password" placeholder="Create password" autoComplete="new-password" />
@@ -72,6 +83,10 @@ const FoodPartnerRegister = () => {
             <label htmlFor="address">Address</label>
             <input id="address" name="address" placeholder="123 Market Street" autoComplete="street-address" />
             <p className="small-note">Full address helps customers find you faster.</p>
+          </div>
+          <div className="field-group">
+            <label htmlFor="image">Profile Image</label>
+            <input id="image" name="image" type="file" accept="image/*" />
           </div>
           <button className="auth-submit" type="submit">Create Partner Account</button>
         </form>
