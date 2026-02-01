@@ -10,7 +10,7 @@ const api = axios.create({
     baseURL: API_URL,
     withCredentials: true,
     headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json', // Removed to allow Axios to set correct content type (e.g. for FormData)
     },
 });
 
