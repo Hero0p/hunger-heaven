@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+
+app.set("trust proxy", 1);
+
 const cookieParser = require('cookie-parser');
 const authRoutes = require("./routes/auth.routes");
 const foodRoutes = require("./routes/food.routes");
@@ -9,7 +12,7 @@ const cors = require('cors');
 
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://hunger-heaven.vercel.app"
+    "https://hunger-heaven-two.vercel.app"
 ];
 
 app.use(cors({
