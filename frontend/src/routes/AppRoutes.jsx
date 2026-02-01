@@ -14,6 +14,7 @@ import UserProfile from '../pages/general/Profile';
 import Discover from '../pages/Discover';
 import AddMenu from '../pages/food-partner/AddMenu';
 import LandingPage from '../pages/general/LandingPage';
+import PartnerDashboard from '../pages/food-partner/PartnerDashboard';
 import Search from '../pages/general/Search';
 
 const AppRoutes = () => {
@@ -33,6 +34,7 @@ const AppRoutes = () => {
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/create-food" element={<CreateFood />} />
                 <Route path="/partner/add-menu" element={<AddMenu />} />
+                <Route path="/partner/dashboard" element={<PartnerDashboard />} />
                 <Route path="/food-partner/:id" element={<Profile />} />
             </Routes>
         </Router>

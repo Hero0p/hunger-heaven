@@ -22,7 +22,7 @@ const FoodPartnerLogin = () => {
       }, { withCredentials: true });
 
       showMessage('Partner login successful!', 'success');
-      navigate("/create-food"); // Redirect to create food page after login
+      navigate("/partner/dashboard"); // Redirect to dashboard after login
     } catch (error) {
       console.error(error);
       showMessage(error.response?.data?.message || 'Login failed. Check credentials.', 'error');
