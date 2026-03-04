@@ -1,6 +1,6 @@
 # HungerHeaven - Food Delivery & Social Platform
 
-HungerHeaven is a modern food delivery application that combines the convenience of ordering food with the engagement of a social platform. Users can browse restaurants, view menus, and also watch short food reels shared by food partners.
+HungerHeaven is a modern food-delivery application that combines the convenience of ordering food with the engagement of a social platform. Users can browse restaurants, view menus, and also watch short food reels shared by food partners.
 
 ## 🚀 Features
 

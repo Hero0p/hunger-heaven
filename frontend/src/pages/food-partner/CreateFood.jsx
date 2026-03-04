@@ -56,7 +56,13 @@ const CreateFood = () => {
         formData.append('description', description);
         formData.append("video", videoFile);
 
-        const response = await api.post("/food", formData)
+        console.log("Submitting Food...");
+        console.log("Video File:", videoFile);
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+
+        const response = await api.post("/food", formData);
 
         console.log(response.data);
         navigate("/"); // Redirect to home or another page after successful creation

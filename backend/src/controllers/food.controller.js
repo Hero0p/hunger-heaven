@@ -5,9 +5,10 @@ const saveModel = require("../models/save.model")
 const { v4: uuid } = require("uuid");
 
 async function createFood(req, res) {
-    // console.log(req.body);
-    // console.log(req.file);
-    // console.log(req.files);
+    console.log("--- Create Food Request ---");
+    console.log("Headers Content-Type:", req.headers['content-type']);
+    console.log("Req Body:", req.body);
+    console.log("Req Files:", req.files);
 
     let videoUrl = "";
     if (req.files && req.files.video) {
