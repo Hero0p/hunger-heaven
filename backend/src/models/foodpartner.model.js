@@ -28,8 +28,13 @@ const foodPartnerSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true,
         default: ""
+    },
+    cuisine: {
+        type: String
+    },
+    rating: {
+        type: Number
     }
 })
 

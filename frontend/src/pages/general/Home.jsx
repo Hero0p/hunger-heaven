@@ -5,6 +5,7 @@ import ReelFeed from '../../components/ReelFeed'
 
 const Home = () => {
     const [videos, setVideos] = useState([])
+    const [emptyMessage, setEmptyMessage] = useState("No videos available.")
     // Autoplay behavior is handled inside ReelFeed
 
     useEffect(() => {
@@ -15,7 +16,9 @@ const Home = () => {
 
                 setVideos(response.data.foodItems)
             })
-            .catch(() => { /* noop: optionally handle error */ })
+            .catch((error) => {
+                if (error.response?.status === 401) setEmptyMessage("Please log in as a foodie to watch reels.")
+            })
     }, [])
 
     // Using local refs within ReelFeed; keeping map here for dependency parity if needed
@@ -38,9 +41,9 @@ const Home = () => {
         const response = await api.post("/food/save", { foodId: item._id })
 
         if (response.data.save) {
-            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: v.savesCount + 1 } : v))
+            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: v.savesCount + 1, isSaved: true } : v))
         } else {
-            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: v.savesCount - 1 } : v))
+            setVideos((prev) => prev.map((v) => v._id === item._id ? { ...v, savesCount: v.savesCount - 1, isSaved: false } : v))
         }
     }
 
@@ -49,7 +52,7 @@ const Home = () => {
             items={videos}
             onLike={likeVideo}
             onSave={saveVideo}
-            emptyMessage="No videos available."
+            emptyMessage={emptyMessage}
         />
     )
 }

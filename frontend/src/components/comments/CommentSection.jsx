@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CommentItem from './CommentItem';
 import { getComments, postComment } from '../../services/comment.api';
@@ -30,8 +30,8 @@ const CommentSection = ({ contentId, onClose }) => {
                 } else {
                     setComments(prev => [...prev, ...data.comments]);
                 }
-                // Check if we reached the end
-                if (data.comments.length === 0 || data.totalPages === pageNum) {
+                // Check if we reached the end (backend pages are 10 comments)
+                if (data.comments.length < 10) {
                     setHasMore(false);
                 }
             } else {

@@ -21,8 +21,8 @@ const Discover = () => {
                     setRestaurants(prev => [...prev, ...data.restaurants]);
                 }
 
-                // Assuming backend returns info about total pages or if next page exists
-                if (data.restaurants.length === 0 || data.totalPages === pageNum) {
+                // A short page (backend default limit is 10) means there is nothing more to load
+                if (data.restaurants.length < 10) {
                     setHasMore(false);
                 }
             }

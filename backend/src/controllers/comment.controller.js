@@ -17,8 +17,8 @@ async function createComment(req, res) {
             text
         });
 
-        // Optionally populate user to return consistent response
-        // await comment.populate('user', 'name'); 
+        // Populate user so the response matches getCommentsByFoodId
+        await comment.populate('user', 'fullName');
 
         res.status(201).json({
             message: "Comment added successfully",

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const foodPartnerModel = require('../models/foodpartner.model');
 const foodModel = require('../models/food.model');
 const { getEngagement } = require("../utils/index");
@@ -6,13 +7,18 @@ async function getFoodPartnerById(req, res) {
 
     const foodPartnerId = req.params.id;
 
-    const foodPartner = await foodPartnerModel.findById(foodPartnerId)
-    const foodItemsByFoodPartner = await foodModel.find({ foodPartner: foodPartnerId })
-    const customersServed = getEngagement(foodPartnerId);
+    if (!mongoose.Types.ObjectId.isValid(foodPartnerId)) {
+        return res.status(404).json({ message: "Food partner not found" });
+    }
+
+    const foodPartner = await foodPartnerModel.findById(foodPartnerId).select("-password")
 
     if (!foodPartner) {
         return res.status(404).json({ message: "Food partner not found" });
     }
+
+    const foodItemsByFoodPartner = await foodModel.find({ foodPartner: foodPartnerId })
+    const customersServed = getEngagement(foodPartnerId);
 
     // Separate Reels (have video) vs Menu Items (no video or empty)
     // Note: Old data might have video required so 'reels' might overlap unless we strictly check content.

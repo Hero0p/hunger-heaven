@@ -6,7 +6,7 @@ const RestaurantCard = ({ restaurant }) => {
         <Link to={`/food-partner/${restaurant._id}`} className="restaurant-card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className="restaurant-card-image-container" style={{ position: 'relative', width: '100%', paddingTop: '66%', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#e0e0e0' }}>
                 <img
-                    src={restaurant.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    src={restaurant.image || 'https://placehold.co/400x300?text=No+Image'}
                     alt={restaurant.name}
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />

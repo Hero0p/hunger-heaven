@@ -9,6 +9,9 @@ async function getDiscover(req, res) {
 
         const partners = await foodPartnerModel.aggregate([
             {
+                $sort: { _id: 1 }
+            },
+            {
                 $skip: skip
             },
             {
@@ -27,18 +30,24 @@ async function getDiscover(req, res) {
                     name: 1,
                     image: 1,
                     address: 1,
-                    totalFoodItems: { $size: '$foods' },
+                    cuisine: 1,
+                    rating: 1,
+                    // Menu items have no video; reels do
+                    totalFoodItems: {
+                        $size: {
+                            $filter: {
+                                input: '$foods',
+                                as: 'food',
+                                cond: { $eq: [{ $ifNull: ['$$food.video', ""] }, ""] }
+                            }
+                        }
+                    },
                     totalReels: {
                         $size: {
                             $filter: {
                                 input: '$foods',
                                 as: 'food',
-                                cond: {
-                                    $and: [
-                                        { $ne: ['$$food.video', null] },
-                                        { $ne: ['$$food.video', ""] }
-                                    ]
-                                }
+                                cond: { $ne: [{ $ifNull: ['$$food.video', ""] }, ""] }
                             }
                         }
                     }

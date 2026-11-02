@@ -19,18 +19,21 @@ const CommentItem = ({ comment }) => {
         return Math.floor(seconds) + "s";
     };
 
+    // Backend populates user.fullName; optimistic comments use user.name
+    const userName = comment.user?.fullName || comment.user?.name || 'User';
+
     return (
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '8px 0', borderBottom: '1px solid #f9f9f9' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#eee', flexShrink: 0, overflow: 'hidden' }}>
                 <img
-                    src={comment.user?.avatar || `https://ui-avatars.com/api/?name=${comment.user?.name || 'U'}&background=random`}
-                    alt={comment.user?.name || 'User'}
+                    src={comment.user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=random`}
+                    alt={userName}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
             </div>
             <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', gap: '6px', alignItems: 'baseline' }}>
-                    <span style={{ fontWeight: '600', fontSize: '0.85rem' }}>{comment.user?.name || 'User'}</span>
+                    <span style={{ fontWeight: '600', fontSize: '0.85rem' }}>{userName}</span>
                     <span style={{ fontSize: '0.75rem', color: '#888' }}>{timeAgo(comment.createdAt)}</span>
                 </div>
                 <p style={{ margin: '2px 0 0', fontSize: '0.9rem', lineHeight: '1.3' }}>{comment.text}</p>

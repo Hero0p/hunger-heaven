@@ -8,6 +8,9 @@ async function authFoodPartnerMiddleware(req, res, next) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const foodPartner = await foodPartnerModel.findById(decoded.id);
+        if (!foodPartner) {
+            return res.status(401).json({ message: "unauthorized access - please login as a food partner" });
+        }
 
         req.foodPartner = foodPartner;
         next();

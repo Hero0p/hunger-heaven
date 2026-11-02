@@ -13,7 +13,7 @@ const MenuGrid = ({ items = [] }) => {
                 <div key={item._id || index} className="menu-card">
                     <div className="menu-card-image-container">
                         <img
-                            src={item.image || 'https://via.placeholder.com/300?text=No+Image'}
+                            src={item.image || 'https://placehold.co/300?text=No+Image'}
                             alt={item.name}
                             className="menu-card-image"
                         />

@@ -5,11 +5,13 @@ import ReelFeed from '../../components/ReelFeed'
 
 const Saved = () => {
     const [videos, setVideos] = useState([])
+    const [emptyMessage, setEmptyMessage] = useState("No saved videos yet.")
 
     useEffect(() => {
         api.get("/food/save")
             .then(response => {
-                const savedFoods = response.data.savedFoods.map((item) => ({
+                // Skip saves whose food item has since been deleted
+                const savedFoods = response.data.savedFoods.filter((item) => item.food).map((item) => ({
                     _id: item.food._id,
                     video: item.food.video,
                     description: item.food.description,
@@ -20,6 +22,9 @@ const Saved = () => {
                     isSaved: true,
                 }))
                 setVideos(savedFoods)
+            })
+            .catch((error) => {
+                if (error.response?.status === 401) setEmptyMessage("Please log in as a foodie to see your saved videos.")
             })
     }, [])
 
@@ -36,7 +41,7 @@ const Saved = () => {
         <ReelFeed
             items={videos}
             onSave={removeSaved}
-            emptyMessage="No saved videos yet."
+            emptyMessage={emptyMessage}
         />
     )
 }

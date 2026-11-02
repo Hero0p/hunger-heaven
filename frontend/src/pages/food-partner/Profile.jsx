@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../styles/profile.css'
 import { useParams, Link } from 'react-router-dom'
 import api from '../../services/api'
@@ -10,6 +10,7 @@ const Profile = () => {
     const [videos, setVideos] = useState([])
     const [menuItems, setMenuItems] = useState([])
     const [activeTab, setActiveTab] = useState('reels')
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         api.get(`/food-partner/${id}`)
@@ -18,7 +19,22 @@ const Profile = () => {
                 setVideos(response.data.foodPartner.reels || [])
                 setMenuItems(response.data.foodPartner.menuItems || [])
             })
+            .catch((err) => {
+                setError(err.response?.status === 401 ? 'login' : 'Restaurant not found.')
+            })
     }, [id])
+
+    if (error) {
+        return (
+            <main className="profile-page" style={{ textAlign: 'center', padding: '40px 20px' }}>
+                {error === 'login' ? (
+                    <p>Please <Link to="/user/login">log in as a foodie</Link> to view this restaurant.</p>
+                ) : (
+                    <p>{error}</p>
+                )}
+            </main>
+        )
+    }
 
 
     return (
@@ -92,7 +108,7 @@ const Profile = () => {
                     <section className="profile-grid" aria-label="Videos">
                         {videos.length === 0 ? <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '20px', color: '#999' }}>No reels yet.</div> : null}
                         {videos.map((v) => (
-                            <Link to="/feed" key={v.id} className="profile-grid-item" style={{ display: 'block', textDecoration: 'none' }}>
+                            <Link to="/feed" key={v._id}className="profile-grid-item" style={{ display: 'block', textDecoration: 'none' }}>
                                 <video
                                     className="profile-grid-video"
                                     style={{ objectFit: 'cover', width: '100%', height: '100%' }}

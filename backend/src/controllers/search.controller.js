@@ -11,8 +11,8 @@ module.exports.search = async (req, res) => {
 
         const query = q.trim();
 
-        // Use regex for case-insensitive partial matching
-        const regex = new RegExp(query, 'i');
+        // Use regex for case-insensitive partial matching (escape user input so "(" or "*" can't break the pattern)
+        const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 
         // Search Food Items (by name or description)
         // Ensure we only returning valid video content items if desired, but general search usually includes all.
@@ -27,7 +27,7 @@ module.exports.search = async (req, res) => {
         // Search Food Partners (by name)
         const restaurants = await foodPartnerModel.find({
             name: regex
-        }).limit(20).select('name image email address city');
+        }).limit(20).select('name image address cuisine');
 
         res.status(200).json({
             foods,

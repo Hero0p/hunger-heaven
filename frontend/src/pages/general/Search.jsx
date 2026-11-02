@@ -107,7 +107,7 @@ const Search = () => {
                                             </div>
                                             <div className={classes.cardContent}>
                                                 <h4>{partner.name}</h4>
-                                                <p>{partner.city}</p>
+                                                <p>{partner.cuisine || partner.address}</p>
                                             </div>
                                         </Link>
                                     ))}
@@ -125,11 +125,17 @@ const Search = () => {
                                                  If no thumbnail, use partner image or placeholder 
                                              */}
                                             <div className={classes.cardImage}>
-                                                <video src={food.video} muted className={classes.videoThumbnail} />
+                                                {food.image ? (
+                                                    <img src={food.image} alt={food.name} />
+                                                ) : food.video ? (
+                                                    <video src={food.video} muted className={classes.videoThumbnail} />
+                                                ) : (
+                                                    <div className={classes.placeholder}></div>
+                                                )}
                                             </div>
                                             <div className={classes.cardContent}>
                                                 <h4>{food.name}</h4>
-                                                <p className={classes.price}>₹{food.price}</p>
+                                                {food.price != null && <p className={classes.price}>₹{food.price}</p>}
                                                 {food.foodPartner && (
                                                     <Link to={`/food-partner/${food.foodPartner._id}`} className={classes.partnerLink}>
                                                         by {food.foodPartner.name}

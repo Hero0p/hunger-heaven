@@ -46,6 +46,10 @@ async function getFoodItems(req, res) {
                     video: { $exists: true, $ne: "" }
                 }
             },
+            // Newest reels first
+            {
+                $sort: { _id: -1 }
+            },
             {
                 $lookup: {
                     from: 'foodpartners',
@@ -215,11 +219,10 @@ async function getSaveFood(req, res) {
 
     const user = req.user;
 
-    const savedFoods = await saveModel.find({ user: user._id }).populate('food');
-
-    if (!savedFoods || savedFoods.length === 0) {
-        return res.status(404).json({ message: "No saved foods found" });
-    }
+    const savedFoods = await saveModel.find({ user: user._id }).populate({
+        path: 'food',
+        populate: { path: 'foodPartner', select: 'name image' }
+    });
 
     res.status(200).json({
         message: "Saved foods retrieved successfully",
