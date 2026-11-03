@@ -16,6 +16,7 @@ import AddMenu from '../pages/food-partner/AddMenu';
 import LandingPage from '../pages/general/LandingPage';
 import PartnerDashboard from '../pages/food-partner/PartnerDashboard';
 import Search from '../pages/general/Search';
+import NotFound from '../pages/general/NotFound';
 
 const AppRoutes = () => {
     return (
@@ -35,7 +36,8 @@ const AppRoutes = () => {
                 <Route path="/create-food" element={<CreateFood />} />
                 <Route path="/partner/add-menu" element={<AddMenu />} />
                 <Route path="/partner/dashboard" element={<PartnerDashboard />} />
-                <Route path="/food-partner/:id" element={<Profile />} />
+                <Route path="/food-partner/:id" element={<><Profile /><BottomNav /></>} />
+                <Route path="*" element={<><NotFound /><BottomNav /></>} />
             </Routes>
         </Router>
     )

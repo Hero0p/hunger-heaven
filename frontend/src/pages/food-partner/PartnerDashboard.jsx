@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/theme.css';
+import { useUser } from '../../context/UserContext';
 
 const PartnerDashboard = () => {
+    // Clears the shared session cookie and stored token, then returns to the landing page
+    const { logout } = useUser();
+
     return (
         <div style={{
             minHeight: '100vh',
@@ -12,8 +16,13 @@ const PartnerDashboard = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            textAlign: 'center'
+            textAlign: 'center',
+            position: 'relative'
         }}>
+            <div style={{ position: 'absolute', top: 16, left: 24, right: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Link to="/" style={{ fontWeight: 800, color: 'var(--color-primary-deep)', textDecoration: 'none', letterSpacing: '-0.02em' }}>HungerHeaven</Link>
+                <button onClick={logout} className="btn btn-outline" style={{ padding: '8px 16px' }}>Log out</button>
+            </div>
             <h1 style={{ fontSize: '2rem', marginBottom: '8px', color: '#064e3b' }}>Partner Dashboard</h1>
             <p style={{ color: 'var(--color-text-secondary)', marginBottom: '40px' }}>What would you like to create today?</p>
 

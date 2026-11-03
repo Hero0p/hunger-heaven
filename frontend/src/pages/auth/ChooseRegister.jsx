@@ -6,6 +6,7 @@ const ChooseRegister = () => {
   return (
     <div className="auth-page-wrapper">
       <div className="auth-card" role="region" aria-labelledby="choose-register-title">
+        <Link to="/" className="auth-brand">HungerHeaven</Link>
         <header>
           <h1 id="choose-register-title" className="auth-title">Register</h1>
           <p className="auth-subtitle">Pick how you want to join the platform.</p>

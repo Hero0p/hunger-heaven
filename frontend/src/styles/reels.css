@@ -3,8 +3,7 @@
 /* Page container */
 .reels-page {
   height: 100dvh;
-  background: var(--bg-main);
-  /* Light background behind reels */
+  background: #0b0f0d;
   overflow: hidden;
 }
 
@@ -16,7 +15,11 @@
   scroll-snap-type: y mandatory;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.reels-feed::-webkit-scrollbar {
+  display: none;
 }
 
 /* Fullscreen reel */
@@ -25,8 +28,18 @@
   height: 100dvh;
   width: 100%;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  justify-content: center;
+}
+
+/* Phone-shaped frame: full screen on mobile, a centred 9:16 column on wide screens */
+.reel-frame {
+  position: relative;
+  height: 100%;
+  width: min(100%, calc(100dvh * 9 / 16));
   background: #000;
-  /* Video background always black */
+  overflow: hidden;
 }
 
 .reel-video {
@@ -37,6 +50,26 @@
   object-fit: cover;
   object-position: center;
   background: #000;
+  cursor: pointer;
+}
+
+.reel-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  display: grid;
+  place-items: center;
+  padding-left: 4px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  z-index: 5;
 }
 
 .reel-overlay {
@@ -47,100 +80,149 @@
   pointer-events: none;
 }
 
-/* Gradient for readability over video */
+/* Gradients keep text readable over bright footage */
 .reel-overlay-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-      rgba(0, 0, 0, 0) 50%,
-      rgba(0, 0, 0, 0.6) 100%);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 18%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.25) 32%, rgba(0, 0, 0, 0) 50%);
 }
 
 .reel-content {
   position: relative;
   width: 100%;
-  padding: var(--space-6);
-  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 72px);
+  padding: var(--space-4);
+  padding-right: 76px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--bottom-nav-space));
   display: flex;
   flex-direction: column;
-  padding-right: 4.5rem;
-  gap: var(--space-4);
+  gap: 6px;
   pointer-events: auto;
+  color: #fff;
+}
+
+.reel-partner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: 4px;
+  min-width: 0;
+}
+
+.reel-partner__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: #fff;
+  text-decoration: none;
+}
+
+.reel-partner__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  flex-shrink: 0;
+  background: var(--color-primary);
+}
+
+.reel-partner__avatar--empty {
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.reel-partner__name {
+  font-weight: 700;
+  font-size: 0.98rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.reel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .reel-description {
-  color: #fff;
+  color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
-  font-size: 1rem;
-  line-height: 1.3;
+  font-size: 0.92rem;
+  line-height: 1.4;
   display: -webkit-box;
   line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  max-width: 90ch;
 }
 
 .reel-btn {
-  align-self: flex-start;
-  background: var(--color-accent);
+  flex-shrink: 0;
   color: #fff;
-  /* Keep white on accent */
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: 700;
-  letter-spacing: .3px;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
   text-decoration: none;
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-base), background var(--transition-base);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+  transition: background var(--transition-base);
 }
 
 .reel-btn:hover {
-  background: var(--color-accent-hover);
-}
-
-.reel-btn:active {
-  transform: translateY(1px);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 /* Right-side actions */
-.reels-actions {
-  /* Naming convention fix from 'reel-actions' if needed, but keeping existing class */
-}
-
 .reel-actions {
   position: absolute;
-  right: 10px;
-  bottom: 96px;
+  right: 12px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--bottom-nav-space));
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   pointer-events: auto;
   z-index: 20;
 }
 
 .reel-action {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
   display: grid;
   place-items: center;
-  /* Glass effect for actions over video */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(6px);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: transform 120ms ease, background var(--transition-base);
+}
+
+.reel-action:hover {
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .reel-action:active {
-  transform: translateY(1px);
+  transform: scale(0.92);
+}
+
+.reel-action.is-liked {
+  color: var(--color-like);
 }
 
 .reel-action__count {
   color: #fff;
   text-align: center;
   font-size: 12px;
+  font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -151,12 +233,34 @@
   gap: 4px;
 }
 
-.empty-state {
-  position: absolute;
-  inset: 0;
+/* Loading / empty states on the dark feed background */
+.reels-state {
+  height: 100%;
   display: grid;
   place-items: center;
-  color: var(--color-text-secondary);
-  /* Empty state should handle light background if video fails */
-  background: var(--bg-main);
+  padding: var(--space-6);
+}
+
+.reels-spinner {
+  border-color: rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+}
+
+.reels-state__content {
+  max-width: 340px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.reels-state__content h2 {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.reels-state__content .btn {
+  margin-top: var(--space-2);
 }

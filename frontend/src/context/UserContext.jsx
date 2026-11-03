@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import api from '../services/api';
+import api, { setAuthToken } from '../services/api';
 
 const UserContext = createContext(null);
 
@@ -30,12 +30,13 @@ export const UserProvider = ({ children }) => {
     const logout = async () => {
         try {
             await api.get('/auth/user/logout');
-            setUser(null);
-            // Optional: redirect or reload
-            window.location.href = '/';
         } catch (error) {
             console.error("Logout failed", error);
         }
+        // Clear the local session even if the request failed
+        setAuthToken(null);
+        setUser(null);
+        window.location.href = '/';
     };
 
     return (

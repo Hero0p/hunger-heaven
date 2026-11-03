@@ -14,4 +14,25 @@ const api = axios.create({
     },
 });
 
+// The API lives on another site, so browsers that block third-party cookies drop the
+// login cookie. Keep a copy of the token and send it as a header as well.
+const TOKEN_KEY = 'hh_token';
+
+export const getAuthToken = () => {
+    try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
+};
+
+export const setAuthToken = (token) => {
+    try {
+        if (token) localStorage.setItem(TOKEN_KEY, token);
+        else localStorage.removeItem(TOKEN_KEY);
+    } catch { /* storage unavailable (private mode): cookie auth still works */ }
+};
+
+api.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
+
 export default api;

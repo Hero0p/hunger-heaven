@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 import CommentItem from './CommentItem';
 import { getComments, postComment } from '../../services/comment.api';
+import { useUser } from '../../context/UserContext';
 
 const CommentSection = ({ contentId, onClose }) => {
+    const { user } = useUser();
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(false);
@@ -13,7 +16,6 @@ const CommentSection = ({ contentId, onClose }) => {
 
     // Prevent background scrolling when open
     useEffect(() => {
-        console.log('CommentSection mounted', contentId);
         document.body.style.overflow = 'hidden';
         return () => {
             document.body.style.overflow = 'unset';
@@ -66,7 +68,7 @@ const CommentSection = ({ contentId, onClose }) => {
         const optimisticComment = {
             id: tempId,
             text: newComment,
-            user: { name: 'You', avatar: '' }, // Placeholder, ideally get from auth context
+            user: { name: user?.name || 'You', avatar: '' },
             createdAt: new Date().toISOString()
         };
 
@@ -125,7 +127,7 @@ const CommentSection = ({ contentId, onClose }) => {
                 <div style={{ padding: '12px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'center', position: 'relative' }}>
                     <div style={{ width: '40px', height: '4px', backgroundColor: '#ddd', borderRadius: '2px', position: 'absolute', top: '8px' }}></div>
                     <h3 style={{ margin: '12px 0 0', fontSize: '1rem' }}>Comments</h3>
-                    <button onClick={onClose} style={{ position: 'absolute', right: '12px', top: '12px', background: 'none', border: 'none', fontSize: '1.5rem', lineHeight: 1 }}>&times;</button>
+                    <button onClick={onClose} aria-label="Close comments" style={{ position: 'absolute', right: '12px', top: '12px', background: 'none', border: 'none', fontSize: '1.5rem', lineHeight: 1, cursor: 'pointer', color: 'var(--color-text-secondary)' }}>&times;</button>
                 </div>
 
                 <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
@@ -141,30 +143,36 @@ const CommentSection = ({ contentId, onClose }) => {
                         <button
                             onClick={handleLoadMore}
                             disabled={loading}
-                            style={{ width: '100%', padding: '12px', background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', marginTop: '10px' }}
+                            style={{ width: '100%', padding: '12px', background: 'none', border: 'none', color: 'var(--color-primary)', fontWeight: 600, cursor: 'pointer', marginTop: '10px' }}
                         >
                             {loading ? 'Loading...' : 'Load more comments'}
                         </button>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ padding: '12px', borderTop: '1px solid #eee', display: 'flex', gap: '8px' }}>
-                    <input
-                        type="text"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a comment..."
-                        style={{ flex: 1, padding: '10px', borderRadius: '20px', border: '1px solid #ddd', outline: 'none' }}
-                        disabled={submitting}
-                    />
-                    <button
-                        type="submit"
-                        disabled={!newComment.trim() || submitting}
-                        style={{ background: 'none', border: 'none', color: newComment.trim() ? '#0095f6' : '#b2dffc', fontWeight: '600', cursor: 'pointer' }}
-                    >
-                        Post
-                    </button>
-                </form>
+                {user ? (
+                    <form onSubmit={handleSubmit} style={{ padding: '12px', borderTop: '1px solid #eee', display: 'flex', gap: '8px' }}>
+                        <input
+                            type="text"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Add a comment..."
+                            style={{ flex: 1, padding: '10px 14px', borderRadius: '20px', border: '1px solid var(--border-subtle)', outline: 'none', font: 'inherit' }}
+                            disabled={submitting}
+                        />
+                        <button
+                            type="submit"
+                            disabled={!newComment.trim() || submitting}
+                            style={{ background: 'none', border: 'none', color: 'var(--color-primary)', opacity: newComment.trim() ? 1 : 0.4, fontWeight: '600', cursor: 'pointer' }}
+                        >
+                            Post
+                        </button>
+                    </form>
+                ) : (
+                    <div style={{ padding: '14px', borderTop: '1px solid #eee', textAlign: 'center', fontSize: '0.92rem', color: 'var(--color-text-secondary)' }}>
+                        <Link to="/user/login" state={{ from: `/feed?reel=${contentId}` }} style={{ fontWeight: 600 }}>Log in</Link> to join the conversation
+                    </div>
+                )}
             </div>
         </div>,
         document.body

@@ -1,51 +1,65 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import BottomNav from '../../components/BottomNav';
+import '../../styles/account.css';
+
+const Chevron = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+);
 
 const Profile = () => {
-    const { user, logout } = useUser();
+    const { user, loading, logout } = useUser();
 
     return (
-        <div style={{ paddingBottom: '80px', minHeight: '100vh', background: 'var(--bg-main)' }}>
-            <div style={{ padding: '24px' }}>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '24px' }}>Profile</h1>
+        <div className="page account-page">
+            <header className="page-header">
+                <h1 className="page-title">Profile</h1>
+            </header>
 
-                {user ? (
-                    <div style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#ff7f50', color: 'white', display: 'grid', placeItems: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                                {user.name?.charAt(0) || 'U'}
-                            </div>
-                            <div>
-                                <h2 style={{ fontSize: '1.2rem', fontWeight: '600', margin: 0 }}>{user.name}</h2>
-                                <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>{user.email}</p>
-                            </div>
+            {loading ? (
+                <div className="spinner-center"><div className="spinner" /></div>
+            ) : user ? (
+                <>
+                    <section className="account-card">
+                        <div className="account-avatar">{user.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                        <div className="account-info">
+                            <h2>{user.name}</h2>
+                            <p>{user.email}</p>
                         </div>
+                    </section>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <button
-                                onClick={logout}
-                                style={{
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #fee2e2',
-                                    background: '#fef2f2',
-                                    color: '#ef4444',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    width: '100%'
-                                }}
-                            >
-                                Logout
-                            </button>
+                    <nav className="account-links" aria-label="Account">
+                        <Link to="/saved" className="account-link">Saved reels <Chevron /></Link>
+                        <Link to="/discover" className="account-link">Browse restaurants <Chevron /></Link>
+                        <Link to="/feed" className="account-link">Watch reels <Chevron /></Link>
+                    </nav>
+
+                    <button onClick={logout} className="btn btn-danger-soft account-logout">Log out</button>
+                </>
+            ) : (
+                <>
+                    <section className="empty-card account-guest">
+                        <div className="account-avatar account-avatar--guest" aria-hidden="true">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                         </div>
-                    </div>
-                ) : (
-                    <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
-                        <p>Please login to view your profile.</p>
-                    </div>
-                )}
-            </div>
+                        <h2>You're browsing as a guest</h2>
+                        <p>Log in to like, save and comment on reels.</p>
+                        <div className="account-guest__actions">
+                            <Link to="/user/login" state={{ from: '/profile' }} className="btn btn-solid">Log in</Link>
+                            <Link to="/user/register" state={{ from: '/profile' }} className="btn btn-outline">Create account</Link>
+                        </div>
+                    </section>
+
+                    <Link to="/food-partner/login" className="account-partner">
+                        <div>
+                            <strong>Own a restaurant?</strong>
+                            <span>Log in to the partner dashboard to manage your menu and reels.</span>
+                        </div>
+                        <Chevron />
+                    </Link>
+                </>
+            )}
             <BottomNav />
         </div>
     );

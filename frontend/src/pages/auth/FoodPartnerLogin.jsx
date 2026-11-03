@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/auth-shared.css';
-import api from '../../services/api';
-import { useNavigate } from 'react-router-dom';
+import api, { setAuthToken } from '../../services/api';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
 
 const FoodPartnerLogin = () => {
@@ -21,6 +21,7 @@ const FoodPartnerLogin = () => {
         password
       });
 
+      setAuthToken(response.data.token);
       showMessage('Partner login successful!', 'success');
       navigate("/partner/dashboard"); // Redirect to dashboard after login
     } catch (error) {
@@ -32,6 +33,7 @@ const FoodPartnerLogin = () => {
   return (
     <div className="auth-page-wrapper">
       <div className="auth-card" role="region" aria-labelledby="partner-login-title">
+        <Link to="/" className="auth-brand">HungerHeaven</Link>
         <header>
           <h1 id="partner-login-title" className="auth-title">Partner login</h1>
           <p className="auth-subtitle">Access your dashboard and manage orders.</p>
@@ -48,7 +50,10 @@ const FoodPartnerLogin = () => {
           <button className="auth-submit" type="submit">Sign In</button>
         </form>
         <div className="auth-alt-action">
-          New partner? <a href="/food-partner/register">Create an account</a>
+          New partner? <Link to="/food-partner/register">Create an account</Link>
+        </div>
+        <div className="auth-alt-action">
+          Looking for food? <Link to="/user/login">Foodie login</Link>
         </div>
       </div>
     </div>

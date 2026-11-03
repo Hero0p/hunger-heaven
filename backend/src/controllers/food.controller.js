@@ -38,7 +38,8 @@ async function createFood(req, res) {
 async function getFoodItems(req, res) {
     try {
         const mongoose = require('mongoose');
-        const userId = new mongoose.Types.ObjectId(req.user._id);
+        // Guests get isLiked/isSaved = false (no like/save has a null user)
+        const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null;
 
         const foodItems = await foodModel.aggregate([
             {

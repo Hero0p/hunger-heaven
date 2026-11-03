@@ -14,8 +14,8 @@ router.post('/', authMiddleware.authFoodPartnerMiddleware, upload.fields([{ name
 
 router.post('/menu', authMiddleware.authFoodPartnerMiddleware, upload.any(), foodController.createMenu);
 
-// get for users
-router.get('/', authMiddleware.authUserMiddleware, foodController.getFoodItems);
+// reels feed: public, with like/save state when a user is logged in
+router.get('/', authMiddleware.optionalUserMiddleware, foodController.getFoodItems);
 
 
 router.post('/like',

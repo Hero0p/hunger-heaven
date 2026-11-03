@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import classes from './TopNav.module.css';
 
 import { useUser } from '../context/UserContext';
@@ -12,30 +12,30 @@ const TopNav = () => {
         <nav className={classes.navbar}>
             <div className={classes.container}>
                 <Link to="/" className={classes.logo}>
+                    <span className={classes.logoMark} aria-hidden="true">H</span>
                     HungerHeaven
                 </Link>
 
                 <div className={`${classes.navLinks} ${isMenuOpen ? classes.active : ''}`}>
+                    <div className={classes.group}>
+                        <NavLink to="/discover" className={classes.link}>Discover</NavLink>
+                        <NavLink to="/feed" className={classes.link}>Reels</NavLink>
+                        <NavLink to="/search" className={classes.link}>Search</NavLink>
+                    </div>
+
+                    <div className={classes.divider}></div>
+
                     {user ? (
                         <div className={classes.group}>
-                            <button onClick={logout} className={classes.link} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 'inherit' }}>Logout</button>
+                            <Link to="/profile" className={classes.link}>Hi, {user.name?.split(' ')[0]}</Link>
+                            <button onClick={logout} className={classes.btnGhost}>Log out</button>
                         </div>
                     ) : (
-                        <>
-                            <div className={classes.group}>
-                                <span className={classes.groupLabel}>For Foodies</span>
-                                <Link to="/user/login" className={classes.link}>Login</Link>
-                                <Link to="/user/register" className={classes.btnPrimary}>Sign Up</Link>
-                            </div>
-
-                            <div className={classes.divider}></div>
-
-                            <div className={classes.group}>
-                                <span className={classes.groupLabel}>For Partners</span>
-                                <Link to="/food-partner/login" className={classes.link}>Partner Login</Link>
-                                <Link to="/food-partner/register" className={classes.link}>Partner Sign Up</Link>
-                            </div>
-                        </>
+                        <div className={classes.group}>
+                            <Link to="/food-partner/login" className={classes.link}>For restaurants</Link>
+                            <Link to="/user/login" className={classes.btnGhost}>Log in</Link>
+                            <Link to="/user/register" className={classes.btnPrimary}>Sign up</Link>
+                        </div>
                     )}
                 </div>
 
@@ -43,6 +43,7 @@ const TopNav = () => {
                     className={classes.menuToggle}
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     aria-label="Toggle navigation"
+                    aria-expanded={isMenuOpen}
                 >
                     <span className={classes.bar}></span>
                     <span className={classes.bar}></span>

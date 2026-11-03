@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/auth-shared.css';
-import api from '../../services/api';
+import api, { setAuthToken } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
 
@@ -36,6 +36,7 @@ const FoodPartnerRegister = () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
       .then(response => {
+        setAuthToken(response.data.token);
         showMessage('Partner registration successful!', 'success');
         navigate("/create-food"); // Redirect to create food page after successful registration
       })
@@ -48,6 +49,7 @@ const FoodPartnerRegister = () => {
   return (
     <div className="auth-page-wrapper">
       <div className="auth-card" role="region" aria-labelledby="partner-register-title">
+        <Link to="/" className="auth-brand">HungerHeaven</Link>
         <header>
           <h1 id="partner-register-title" className="auth-title">Partner sign up</h1>
           <p className="auth-subtitle">Grow your business with our platform.</p>

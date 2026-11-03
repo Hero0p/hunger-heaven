@@ -11,7 +11,7 @@ async function getFoodPartnerById(req, res) {
         return res.status(404).json({ message: "Food partner not found" });
     }
 
-    const foodPartner = await foodPartnerModel.findById(foodPartnerId).select("-password")
+    const foodPartner = await foodPartnerModel.findById(foodPartnerId).select("-password -email")
 
     if (!foodPartner) {
         return res.status(404).json({ message: "Food partner not found" });

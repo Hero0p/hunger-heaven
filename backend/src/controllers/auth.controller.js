@@ -230,9 +230,11 @@ async function registerUser(req, res) {
 
         return res.status(201).json({
             message: "User registered successfully",
+            token,
             user: {
                 id: user._id,
                 email: user.email,
+                name: user.fullName,
                 fullName: user.fullName,
             },
         });
@@ -266,6 +268,7 @@ async function loginUser(req, res) {
 
         return res.status(200).json({
             message: "User logged in successfully",
+            token,
             user: {
                 id: user._id,
                 name: user.fullName,
@@ -331,6 +334,7 @@ async function registerPartner(req, res) {
 
         return res.status(201).json({
             message: "Partner registered successfully",
+            token,
             partner: {
                 id: foodPartner._id,
                 name: foodPartner.name,
@@ -370,6 +374,7 @@ async function loginPartner(req, res) {
 
         return res.status(200).json({
             message: "Partner login successful",
+            token,
             partner: {
                 id: foodPartner._id,
                 name: foodPartner.name,

@@ -2,8 +2,17 @@ const foodPartnerModel = require("../models/foodpartner.model")
 const userModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 
+// The frontend (Vercel) and API (Render) are on different sites, so browsers that block
+// third-party cookies never send the httpOnly cookie. The frontend therefore also sends the
+// token as "Authorization: Bearer <token>"; prefer that, fall back to the cookie.
+function getToken(req) {
+    const header = req.headers.authorization || "";
+    if (header.startsWith("Bearer ")) return header.slice(7);
+    return req.cookies.token;
+}
+
 async function authFoodPartnerMiddleware(req, res, next) {
-    const token = req.cookies.token;
+    const token = getToken(req);
     if (!token) return res.status(401).json({ message: "unauthorized access" });
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -20,15 +29,12 @@ async function authFoodPartnerMiddleware(req, res, next) {
 }
 
 async function authUserMiddleware(req, res, next) {
-    const token = req.cookies.token;
-    console.log("Auth Middleware - Token:", token ? "Present" : "Missing");
+    const token = getToken(req);
     if (!token) return res.status(401).json({ message: "unauthorized access please login first" });
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Auth Middleware - Decoded ID:", decoded.id);
         const user = await userModel.findById(decoded.id);
         if (!user) {
-            console.log("Auth Middleware - User not found in DB");
             return res.status(401).json({ message: "unauthorized access - user not found" });
         }
         req.user = user;
@@ -39,4 +45,18 @@ async function authUserMiddleware(req, res, next) {
     }
 }
 
-module.exports = { authFoodPartnerMiddleware, authUserMiddleware };
+// For public pages: attach req.user when a valid user token is present, otherwise continue anonymously
+async function optionalUserMiddleware(req, res, next) {
+    const token = getToken(req);
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = await userModel.findById(decoded.id);
+        } catch (err) {
+            // Invalid or expired token: treat as a guest
+        }
+    }
+    next();
+}
+
+module.exports = { authFoodPartnerMiddleware, authUserMiddleware, optionalUserMiddleware };

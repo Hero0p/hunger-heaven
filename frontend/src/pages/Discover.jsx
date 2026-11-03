@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getRestaurants } from '../services/discover.api';
-import RestaurantCard from '../components/restaurant/RestaurantCard';
-import BottomNav from '../components/BottomNav';
+import RestaurantCard, { RestaurantCardSkeleton } from '../components/restaurant/RestaurantCard';
+import '../styles/discover.css';
 
 const Discover = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -12,6 +13,7 @@ const Discover = () => {
 
     const fetchRestaurants = async (pageNum) => {
         setLoading(true);
+        setError(null);
         try {
             const data = await getRestaurants(pageNum);
             if (data && data.restaurants) {
@@ -28,7 +30,7 @@ const Discover = () => {
             }
         } catch (err) {
             console.error("Failed to load restaurants", err);
-            setError("Failed to load restaurants. Please try again.");
+            setError("We couldn't load restaurants. The server may be waking up, please try again.");
         } finally {
             setLoading(false);
         }
@@ -46,59 +48,53 @@ const Discover = () => {
         }
     };
 
+    const firstLoad = loading && restaurants.length === 0;
+
     return (
-        <div style={{ paddingBottom: '70px', maxWidth: '1200px', margin: '0 auto' }}>
-            <header style={{ padding: '16px 16px 8px 16px', position: 'sticky', top: 0, backgroundColor: 'var(--bg-main)', zIndex: 10 }}>
-                <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold' }}>Discover</h1>
-                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>Find the best food partners around you</p>
+        <div className="page">
+            <header className="page-header discover-header">
+                <div>
+                    <h1 className="page-title">Discover</h1>
+                    <p className="page-subtitle">Find the best food partners around you</p>
+                </div>
+                <Link to="/search" className="discover-search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+                    Search dishes or restaurants
+                </Link>
             </header>
 
-            <main style={{ padding: '16px' }}>
-                {error && (
-                    <div style={{ color: 'red', textAlign: 'center', padding: '20px' }}>
-                        {error}
-                        <br />
-                        <button onClick={() => fetchRestaurants(page)} style={{ marginTop: '10px', padding: '8px 16px', background: '#e23744', color: 'white', border: 'none', borderRadius: '6px' }}>Retry</button>
-                    </div>
-                )}
-
-                <div className="restaurant-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
-                    {restaurants.map(restaurant => (
-                        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
-                    ))}
+            {error && (
+                <div className="empty-card">
+                    <h2>Something went wrong</h2>
+                    <p>{error}</p>
+                    <button className="btn btn-solid" onClick={() => fetchRestaurants(page)}>Retry</button>
                 </div>
+            )}
 
-                {loading && (
-                    <div style={{ textAlign: 'center', padding: '20px' }}>
-                        <div className="loading-spinner" style={{ display: 'inline-block', width: '30px', height: '30px', border: '3px solid #f3f3f3', borderTop: '3px solid #e23744', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-                        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                    </div>
-                )}
+            <div className="restaurant-grid">
+                {restaurants.map(restaurant => (
+                    <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                ))}
+                {firstLoad && Array.from({ length: 6 }, (_, i) => <RestaurantCardSkeleton key={i} />)}
+            </div>
 
-                {!loading && hasMore && (
-                    <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                        <button
-                            onClick={loadMore}
-                            style={{ padding: '10px 24px', background: '#064e3b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem' }}
-                        >
-                            Load More
-                        </button>
-                    </div>
-                )}
+            {loading && !firstLoad && (
+                <div className="spinner-center"><div className="spinner" /></div>
+            )}
 
-                {!loading && !hasMore && restaurants.length > 0 && (
-                    <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
-                        <p>That's all for now!</p>
-                    </div>
-                )}
+            {!loading && hasMore && restaurants.length > 0 && (
+                <div className="discover-more">
+                    <button onClick={loadMore} className="btn btn-outline">Load more</button>
+                </div>
+            )}
 
-                {!loading && restaurants.length === 0 && !error && (
-                    <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                        <p>No restaurants found.</p>
-                    </div>
-                )}
-            </main>
-            <BottomNav />
+            {!loading && !hasMore && restaurants.length > 0 && (
+                <p className="discover-end">You've seen all {restaurants.length} restaurants</p>
+            )}
+
+            {!loading && restaurants.length === 0 && !error && (
+                <div className="empty-card"><p>No restaurants found.</p></div>
+            )}
         </div>
     );
 };

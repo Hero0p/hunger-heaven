@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../../styles/auth-shared.css';
-import api from '../../services/api';
+import api, { setAuthToken } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useFlashMessage } from '../../context/FlashMessageContext';
+import { useUser } from '../../context/UserContext';
 
 const UserRegister = () => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { showMessage } = useFlashMessage();
+    const { login } = useUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,8 +29,11 @@ const UserRegister = () => {
                 password
             })
 
-            showMessage('Registration successful! Please login.', 'success');
-            navigate("/")
+            // The API signs new users in straight away
+            setAuthToken(response.data.token);
+            login(response.data.user);
+            showMessage('Welcome to HungerHeaven!', 'success');
+            navigate(location.state?.from || "/feed")
         } catch (error) {
             console.error(error);
             showMessage(error.response?.data?.message || 'Registration failed. Try again.', 'error');
@@ -38,6 +44,7 @@ const UserRegister = () => {
     return (
         <div className="auth-page-wrapper">
             <div className="auth-card" role="region" aria-labelledby="user-register-title">
+                <Link to="/" className="auth-brand">HungerHeaven</Link>
                 <header>
                     <h1 id="user-register-title" className="auth-title">Create your account</h1>
                     <p className="auth-subtitle">Join to explore and enjoy delicious meals.</p>
@@ -67,7 +74,7 @@ const UserRegister = () => {
                     <button className="auth-submit" type="submit">Sign Up</button>
                 </form>
                 <div className="auth-alt-action">
-                    Already have an account? <Link to="/user/login">Sign in</Link>
+                    Already have an account? <Link to="/user/login" state={location.state}>Sign in</Link>
                 </div>
             </div>
         </div>
